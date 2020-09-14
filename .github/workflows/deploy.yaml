@@ -59,7 +59,7 @@ jobs:
           K8S_CA: ${{secrets.K8S_CA}}
           K8S_SERVER: ${{secrets.K8S_SERVER}}
           K8S_SA_TOKEN: ${{secrets.K8S_SA_TOKEN}}
-      - run: ./scripts/deploy.sh
+      - run: ./scripts/deploy.sh run
         env:
           MANIFESTS_PATH: "./_gen/${{ matrix.environment }}"
           GIT_BEFORE_COMMIT_SHA: ${{ github.event.before }}
