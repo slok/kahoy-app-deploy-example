@@ -1,0 +1,168 @@
+---
+# Source: generic/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app1-production
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-production
+    app.kubernetes.io/instance: app1-production
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: production
+imagePullSecrets: []
+---
+# Source: generic/templates/configuration.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app1-production
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-production
+    app.kubernetes.io/instance: app1-production
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: production
+type: Opaque
+data:
+---
+# Source: generic/templates/configuration.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app1-production
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-production
+    app.kubernetes.io/instance: app1-production
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: production
+data:
+  key1: "val2"
+  key2: "val2"
+---
+# Source: generic/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1-production
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-production
+    app.kubernetes.io/instance: app1-production
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: production
+spec:
+  selector:
+    app.kubernetes.io/name: app1-production
+    app.kubernetes.io/instance: app1-production
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: production
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+  sessionAffinity: ClientIP
+---
+# Source: generic/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1-production
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-production
+    app.kubernetes.io/instance: app1-production
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: production
+spec:
+  replicas: 2
+  minReadySeconds: 30
+  revisionHistoryLimit: 10
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 10%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: app1-production
+      app.kubernetes.io/instance: app1-production
+      app.kubernetes.io/managed-by: kahoy
+      team: a-team
+      env: production
+  template:
+    metadata:
+      annotations:
+        # Force deployment replicas rollout on each change.
+        checksum/config: 54c02812dcb1881a3e12dcf7a0c7cbc0143e294e217ffdd9a78e734af3b2b935
+      labels:
+        app.kubernetes.io/name: app1-production
+        app.kubernetes.io/instance: app1-production
+        app.kubernetes.io/managed-by: kahoy
+        team: a-team
+        env: production
+    spec:
+      serviceAccountName: app1-production
+      containers:
+        - name: app
+          image: "nginx:1.18-alpine"
+          args: []
+          envFrom:
+          - configMapRef:
+              name: app1-production
+          - secretRef:
+              name: app1-production
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: 15Mi
+              cpu: 15m
+            limits:
+              memory: 15Mi
+              cpu: 15m
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+---
+# Source: generic/templates/hpa.yaml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: app1-production
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-production
+    app.kubernetes.io/instance: app1-production
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: production
+spec:
+  maxReplicas: 2
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: app1-production
+  targetCPUUtilizationPercentage: 80
