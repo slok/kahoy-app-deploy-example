@@ -63,4 +63,6 @@ jobs:
         env:
           MANIFESTS_PATH: "./_gen/${{ matrix.environment }}"
           GIT_BEFORE_COMMIT_SHA: ${{ github.event.before }}
+          KAHOY_REPORT: ./kahoy-report.json
+      - run: cat ./kahoy-report.json | ./scripts/wait.sh
           
