@@ -41,7 +41,7 @@ metadata:
     team: a-team
     env: staging
 data:
-  key1: "val2"
+  key1: "val1"
   key2: "val2"
 ---
 # Source: generic/templates/service.yaml
@@ -100,7 +100,7 @@ spec:
     metadata:
       annotations:
         # Force deployment replicas rollout on each change.
-        checksum/config: 0caeb3a52bcc5f0985f871a92340ae2d9fa9230bf94abe8cbcbd82e85348e6a0
+        checksum/config: 0053306be2ddd8ca58875f4baf72fb2629b2a5031c1b15ce7eec04f408d84c8f
       labels:
         app.kubernetes.io/name: app1-staging
         app.kubernetes.io/instance: app1-staging

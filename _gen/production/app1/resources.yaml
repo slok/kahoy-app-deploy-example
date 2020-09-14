@@ -41,7 +41,7 @@ metadata:
     team: a-team
     env: production
 data:
-  key1: "val2"
+  key1: "val1"
   key2: "val2"
 ---
 # Source: generic/templates/service.yaml
@@ -100,7 +100,7 @@ spec:
     metadata:
       annotations:
         # Force deployment replicas rollout on each change.
-        checksum/config: 54c02812dcb1881a3e12dcf7a0c7cbc0143e294e217ffdd9a78e734af3b2b935
+        checksum/config: ccba9379ccadba1e65e1d28de9f2ac4d1588ad028895da32a6556221ba1860ae
       labels:
         app.kubernetes.io/name: app1-production
         app.kubernetes.io/instance: app1-production

@@ -80,5 +80,7 @@ function wait_deleted() {
 
 
 in="$(cat ${1:-/dev/stdin})"
+[ -z "${in}" ] && echo "Empty report" && exit 0;
+
 wait_applied "${in}" "${APPLIED_TIMEOUT:-600}"
 wait_deleted "${in}"
