@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:    
       matrix:
-        environment: [staging]
+        environment: [production, staging]
     container:
       image: slok/kahoy-app-deploy-example:latest
       options: --user 0 # Run as root to be able to download the source code.
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:    
       matrix:
-        environment: [staging]
+        environment: [production, staging]
     container:
       image: slok/kahoy-app-deploy-example:latest
       options: --user 0 # Run as root to be able to download the source code.
