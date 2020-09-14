@@ -1,0 +1,168 @@
+---
+# Source: generic/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app1-staging
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-staging
+    app.kubernetes.io/instance: app1-staging
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: staging
+imagePullSecrets: []
+---
+# Source: generic/templates/configuration.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app1-staging
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-staging
+    app.kubernetes.io/instance: app1-staging
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: staging
+type: Opaque
+data:
+---
+# Source: generic/templates/configuration.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app1-staging
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-staging
+    app.kubernetes.io/instance: app1-staging
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: staging
+data:
+  key1: "val2"
+  key2: "val2"
+---
+# Source: generic/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1-staging
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-staging
+    app.kubernetes.io/instance: app1-staging
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: staging
+spec:
+  selector:
+    app.kubernetes.io/name: app1-staging
+    app.kubernetes.io/instance: app1-staging
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: staging
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+  sessionAffinity: ClientIP
+---
+# Source: generic/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1-staging
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-staging
+    app.kubernetes.io/instance: app1-staging
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: staging
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  revisionHistoryLimit: 10
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 10%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: app1-staging
+      app.kubernetes.io/instance: app1-staging
+      app.kubernetes.io/managed-by: kahoy
+      team: a-team
+      env: staging
+  template:
+    metadata:
+      annotations:
+        # Force deployment replicas rollout on each change.
+        checksum/config: 0caeb3a52bcc5f0985f871a92340ae2d9fa9230bf94abe8cbcbd82e85348e6a0
+      labels:
+        app.kubernetes.io/name: app1-staging
+        app.kubernetes.io/instance: app1-staging
+        app.kubernetes.io/managed-by: kahoy
+        team: a-team
+        env: staging
+    spec:
+      serviceAccountName: app1-staging
+      containers:
+        - name: app
+          image: "nginx:1.19.2-alpine"
+          args: []
+          envFrom:
+          - configMapRef:
+              name: app1-staging
+          - secretRef:
+              name: app1-staging
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: 15Mi
+              cpu: 15m
+            limits:
+              memory: 15Mi
+              cpu: 15m
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+---
+# Source: generic/templates/hpa.yaml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: app1-staging
+  namespace: kahoy-examples
+  labels:
+    app.kubernetes.io/name: app1-staging
+    app.kubernetes.io/instance: app1-staging
+    app.kubernetes.io/managed-by: kahoy
+    team: a-team
+    env: staging
+spec:
+  maxReplicas: 1
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: app1-staging
+  targetCPUUtilizationPercentage: 80

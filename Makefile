@@ -29,12 +29,12 @@ publish-image: ## Publishes the production docker image.
 	@$(PUBLISH_IMAGE_CMD)
 
 .PHONY: gen
-gen: build-image ## Generates manifests.
+gen: ## Generates manifests.
 	@$(DOCKER_RUN_CMD) /bin/sh -c '$(GEN_CMD)'
 
 .PHONY: generate
 generate: gen ## Generates manifests.
 
 .PHONY: check
-check: build-image ## Checks generated manifests are up to date.
+check: ## Checks generated manifests are up to date.
 	@$(DOCKER_RUN_CMD) /bin/sh -c '$(CHECK_CMD)'
