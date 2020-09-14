@@ -1,7 +1,7 @@
 ---
 
 image: "nginx"
-team: "a-team"
+team: "c-team"
 namespace: "kahoy-examples"
 
 environment: 

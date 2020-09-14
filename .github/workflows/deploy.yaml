@@ -54,7 +54,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - run: git branch master origin/master # Track base branch (origin/master) from remote. Kahoy only works with local branches.
       - run: ./scripts/k8s-auth.sh
         env:
           K8S_CA: ${{secrets.K8S_CA}}
