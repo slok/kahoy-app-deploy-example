@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/name: app1-staging
     app.kubernetes.io/instance: app1-staging
     app.kubernetes.io/managed-by: kahoy
-    team: c-team
+    team: a-team
     env: staging
 imagePullSecrets: []
 ---
@@ -23,7 +23,7 @@ metadata:
     app.kubernetes.io/name: app1-staging
     app.kubernetes.io/instance: app1-staging
     app.kubernetes.io/managed-by: kahoy
-    team: c-team
+    team: a-team
     env: staging
 type: Opaque
 data:
@@ -38,7 +38,7 @@ metadata:
     app.kubernetes.io/name: app1-staging
     app.kubernetes.io/instance: app1-staging
     app.kubernetes.io/managed-by: kahoy
-    team: c-team
+    team: a-team
     env: staging
 data:
   key1: "val2"
@@ -54,14 +54,14 @@ metadata:
     app.kubernetes.io/name: app1-staging
     app.kubernetes.io/instance: app1-staging
     app.kubernetes.io/managed-by: kahoy
-    team: c-team
+    team: a-team
     env: staging
 spec:
   selector:
     app.kubernetes.io/name: app1-staging
     app.kubernetes.io/instance: app1-staging
     app.kubernetes.io/managed-by: kahoy
-    team: c-team
+    team: a-team
     env: staging
   ports:
     - name: http
@@ -79,7 +79,7 @@ metadata:
     app.kubernetes.io/name: app1-staging
     app.kubernetes.io/instance: app1-staging
     app.kubernetes.io/managed-by: kahoy
-    team: c-team
+    team: a-team
     env: staging
 spec:
   replicas: 1
@@ -94,18 +94,18 @@ spec:
       app.kubernetes.io/name: app1-staging
       app.kubernetes.io/instance: app1-staging
       app.kubernetes.io/managed-by: kahoy
-      team: c-team
+      team: a-team
       env: staging
   template:
     metadata:
       annotations:
         # Force deployment replicas rollout on each change.
-        checksum/config: 0833b25579b3a000f23b6500bf04d7807495084cfea1a1f9b4e2a85f53ae4c9c
+        checksum/config: 0caeb3a52bcc5f0985f871a92340ae2d9fa9230bf94abe8cbcbd82e85348e6a0
       labels:
         app.kubernetes.io/name: app1-staging
         app.kubernetes.io/instance: app1-staging
         app.kubernetes.io/managed-by: kahoy
-        team: c-team
+        team: a-team
         env: staging
     spec:
       serviceAccountName: app1-staging
@@ -156,7 +156,7 @@ metadata:
     app.kubernetes.io/name: app1-staging
     app.kubernetes.io/instance: app1-staging
     app.kubernetes.io/managed-by: kahoy
-    team: c-team
+    team: a-team
     env: staging
 spec:
   maxReplicas: 1
