@@ -17,6 +17,9 @@ jobs:
     container:
       image: slok/kahoy-app-deploy-example:latest
       options: --user 0 # Run as root to be able to download the source code.
+    env:
+      MANIFESTS_PATH: "./_gen/${{ matrix.environment }}"
+      GIT_BEFORE_COMMIT_SHA: "${{ github.event.inputs.gitBeforeCommitSHA }}"
     steps:
       - uses: actions/checkout@v2
         with:
@@ -26,9 +29,9 @@ jobs:
           K8S_CA: ${{secrets.K8S_CA}}
           K8S_SERVER: ${{secrets.K8S_SERVER}}
           K8S_SA_TOKEN: ${{secrets.K8S_SA_TOKEN}}
+      - run: ./scripts/deploy.sh dry-run
+      - run: ./scripts/deploy.sh diff
       - run: touch ./kahoy-report.json && ./scripts/deploy.sh run
         env:
-          MANIFESTS_PATH: "./_gen/${{ matrix.environment }}"
-          GIT_BEFORE_COMMIT_SHA: "${{ github.event.inputs.gitBeforeCommitSHA }}"
           KAHOY_REPORT: "./kahoy-report.json"
       - run: cat ./kahoy-report.json |./scripts/wait.sh
