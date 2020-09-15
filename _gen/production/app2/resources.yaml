@@ -83,7 +83,7 @@ metadata:
     team: b-team
     env: production
 spec:
-  replicas: 1
+  replicas: 2
   minReadySeconds: 30
   revisionHistoryLimit: 10
   strategy:
@@ -160,8 +160,8 @@ metadata:
     team: b-team
     env: production
 spec:
-  maxReplicas: 1
-  minReplicas: 1
+  maxReplicas: 2
+  minReplicas: 2
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
