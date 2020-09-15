@@ -1,0 +1,36 @@
+name: manual-fix
+
+on: 
+  workflow_dispatch:
+    inputs:
+      gitBeforeCommitSHA:
+        description: 'Git before commit SHA'
+        required: true
+      tags:
+        description: 'The commit used as old state for Kahoy'  
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/master'
+    name: manual deploy
+    runs-on: ubuntu-latest
+    strategy:    
+      matrix:
+        environment: [production, staging]
+    container:
+      image: slok/kahoy-app-deploy-example:latest
+      options: --user 0 # Run as root to be able to download the source code.
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: ./scripts/k8s-auth.sh
+        env:
+          K8S_CA: ${{secrets.K8S_CA}}
+          K8S_SERVER: ${{secrets.K8S_SERVER}}
+          K8S_SA_TOKEN: ${{secrets.K8S_SA_TOKEN}}
+      - run: touch ./kahoy-report.json && ./scripts/deploy.sh run
+        env:
+          MANIFESTS_PATH: "./_gen/${{ matrix.environment }}"
+          GIT_BEFORE_COMMIT_SHA: "${{ github.event.inputs.gitBeforeCommitSHA }}"
+          KAHOY_REPORT: "./kahoy-report.json"
+      - run: cat ./kahoy-report.json |./scripts/wait.sh
