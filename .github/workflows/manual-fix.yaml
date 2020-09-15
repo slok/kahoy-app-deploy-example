@@ -6,8 +6,6 @@ on:
       gitBeforeCommitSHA:
         description: 'Git before commit SHA'
         required: true
-      tags:
-        description: 'The commit used as old state for Kahoy'  
 jobs:
   deploy:
     if: github.ref == 'refs/heads/master'

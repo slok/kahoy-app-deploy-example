@@ -1,4 +1,4 @@
-FROM slok/kahoy:latest
+FROM slok/kahoy:c5f0453ed4258cfebc3927a96e579dc800aebd31
 
 RUN apk --no-cache add \
     git \
