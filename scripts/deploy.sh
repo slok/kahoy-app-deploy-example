@@ -13,31 +13,33 @@ KAHOY_REPORT="${KAHOY_REPORT:-./kahoy-report.json}"
 
 echo "Kahoy running for ${MANIFESTS_PATH} manifests..."
 
-case "${1:-"dry-run"}" in
-"run")
+function kahoy_common() {
     kahoy apply \
-       --include-changes \
        --git-before-commit-sha "${GIT_BEFORE_COMMIT_SHA}" \
        --git-default-branch "${GIT_DEFAULT_BRANCH}" \
        --fs-new-manifests-path "${MANIFESTS_PATH}" \
        --report-path "${KAHOY_REPORT}" \
        --auto-approve
+}
+
+case "${1:-"dry-run"}" in
+"sync-run")
+    kahoy_common
+    ;;
+"sync-diff")
+    KAHOY_DIFF=true kahoy_common
+    ;;
+"sync-dry-run")
+    KAHOY_DRY_RUN=true kahoy_common
+    ;;
+"run")
+    KAHOY_INCLUDE_CHANGES=true kahoy_common
     ;;
 "diff")
-     kahoy apply \
-        --diff \
-        --include-changes \
-        --git-before-commit-sha "${GIT_BEFORE_COMMIT_SHA}" \
-        --git-default-branch "${GIT_DEFAULT_BRANCH}" \
-        --fs-new-manifests-path "${MANIFESTS_PATH}" | colordiff
+    KAHOY_INCLUDE_CHANGES=true KAHOY_DIFF=true kahoy_common
     ;;
 "dry-run")
-    kahoy apply \
-        --dry-run \
-        --include-changes \
-        --git-before-commit-sha "${GIT_BEFORE_COMMIT_SHA}" \
-        --git-default-branch "${GIT_DEFAULT_BRANCH}" \
-        --fs-new-manifests-path "${MANIFESTS_PATH}"
+    KAHOY_INCLUDE_CHANGES=true KAHOY_DRY_RUN=true kahoy_common
     ;;
 *)
     echo "ERROR: Unknown command"
