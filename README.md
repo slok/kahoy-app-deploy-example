@@ -5,12 +5,12 @@ This example shows a simple and reliable way of deploying kubernetes apps easily
 ## Features
 
 - Different environment deployments (staging and production).
-- Multiple applications.
+- Multiple applications (DRY using [Helm] templates).
 - Abstraction layer for deployment configuration (`config.yaml`).
 - Easy way of updating version of the apps.
 - Gitops based on github actions (With dry-run, diff stages)
-- Kahoy to deployment.
-- Waiters for deployments to be ready.
+- [Kahoy] for deployments.
+- Wait deployments finish and be ready (using [Kubedog]).
 - Templated generic service (ingress, HPA, deployment, monitoring...).
 - Optional app configuration inheritance.
 
@@ -109,7 +109,7 @@ All this generation logic can be checked in [`scripts/generate.sh`](scripts/gene
 
 ### Step 2: Deploy to Kubernetes
 
-We will use Kahoy to deploy to Kubernetes. Kahoy is a great tool for raw manifests, it handles the changes based on 2 manifest states. For example the manifests from one commit with the manifests from other commit, that way knows what has been added, changed, deleted..., these are the main features we need:
+We will use [Kahoy] to deploy to Kubernetes. [Kahoy] is a great tool for raw manifests, it handles the changes based on 2 manifest states. For example the manifests from one commit with the manifests from other commit, that way knows what has been added, changed, deleted..., these are the main features we need:
 
 - Understands Kubernetes resources.
 - Has dry-run and diff stages.
@@ -133,11 +133,11 @@ With this we will create some github action workflows of Dry-run, diff, apply (o
 
 Deploy feedback means the feedback that we get after a deployment, not everyone wants this, but some companies are used to wait unit the deployment is ready to mark the deployment as good or bad.
 
-Kahoy solves this by giving the user an optional report of what applied. With this report we can know what we need to wait for.
+[Kahoy] solves this by giving the user an optional report of what applied. With this report we can know what we need to wait for.
 
 To wait we will use [Kubedog], Kubedog knows how to wait Kubernetes core workloads, these are `Deployments`, `StatefulSets`, `Jobs` and `Daemonsets`.
 
-So in a few words, we will take the output of Kahoy, and pass it through Kubedog so it will wait until all the resources are ready (e.g replicas of a deployment updated).
+So in a few words, we will take the output of [Kahoy], and pass it through Kubedog so it will wait until all the resources are ready (e.g replicas of a deployment updated).
 
 We also can wait for deleted resources, for this, we use `kubetcl wait`.
 
