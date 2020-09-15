@@ -10,8 +10,8 @@ environment:
    key3: val3
 
 scalability:
-  replicas: 1
-  maxReplicas: 1
+  replicas: 2
+  maxReplicas: 2
 
 httpService:
   internalPort: 80

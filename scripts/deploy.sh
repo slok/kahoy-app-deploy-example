@@ -27,7 +27,7 @@ case "${1:-"dry-run"}" in
     kahoy_common
     ;;
 "sync-diff")
-    KAHOY_DIFF=true kahoy_common
+    KAHOY_DIFF=true kahoy_common | colordiff
     ;;
 "sync-dry-run")
     KAHOY_DRY_RUN=true kahoy_common
@@ -36,7 +36,7 @@ case "${1:-"dry-run"}" in
     KAHOY_INCLUDE_CHANGES=true kahoy_common
     ;;
 "diff")
-    KAHOY_INCLUDE_CHANGES=true KAHOY_DIFF=true kahoy_common
+    KAHOY_INCLUDE_CHANGES=true KAHOY_DIFF=true kahoy_common | colordiff
     ;;
 "dry-run")
     KAHOY_INCLUDE_CHANGES=true KAHOY_DRY_RUN=true kahoy_common
