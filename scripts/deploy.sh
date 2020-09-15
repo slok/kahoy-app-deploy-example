@@ -20,7 +20,8 @@ case "${1:-"dry-run"}" in
        --git-before-commit-sha "${GIT_BEFORE_COMMIT_SHA}" \
        --git-default-branch "${GIT_DEFAULT_BRANCH}" \
        --fs-new-manifests-path "${MANIFESTS_PATH}" \
-       --report-path "${KAHOY_REPORT}"
+       --report-path "${KAHOY_REPORT}" \
+       --auto-approve
     ;;
 "diff")
      kahoy apply \
